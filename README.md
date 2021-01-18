@@ -1,4 +1,4 @@
-Galaxies simulation (2D)
+Galaxies simulation (3D)
 
 The Barnes-Hut Approximation
 
