@@ -13,6 +13,8 @@ class QOpenGLContext;
 class QOpenGLPaintDevice;
 QT_END_NAMESPACE
 
+//TODO Comment this class
+
 class Widget : public QWindow, protected QOpenGLFunctions
 {
     Q_OBJECT
@@ -35,7 +37,7 @@ public slots:
 protected:
     bool event(QEvent *event) override;
 
-    void exposeEvent(QExposeEvent *event) ;
+    void exposeEvent(QExposeEvent *event) override ;
 
 private:
     Ui::Widget *ui;

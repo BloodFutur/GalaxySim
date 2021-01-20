@@ -56,10 +56,13 @@ double projOnZ(const double &radius, const double &phi, const double &theta);
 
 Vector operator+(Vector  lhs, Vector const & rhs) noexcept;
 Vector operator-(Vector  lhs, Vector const & rhs) noexcept;
+
 // Dot product
 double operator*(Vector  & lhs, Vector const & rhs) noexcept;
+
 // Vectorial product
 Vector operator^(Vector  lhs, Vector const & rhs) noexcept;
+
 Vector operator/(Vector  lhs, double const & rhs) noexcept;
 Vector operator*(Vector  lhs, double const & rhs) noexcept;
 Vector operator*(double const & lhs, Vector  rhs ) noexcept;

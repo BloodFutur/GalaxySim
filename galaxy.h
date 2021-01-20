@@ -10,6 +10,10 @@
 
 #include <QtCore/qmath.h>
 
+//TODO Comment this class
+
+//TODO add a file for simulation parameters
+//TODO render on multithreads
 class Galaxy : public Widget
 {
 public:
