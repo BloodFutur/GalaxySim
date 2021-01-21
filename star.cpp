@@ -106,10 +106,12 @@ void Star::operator=(const Star &star)
 
 void initializeGalaxy(Star::list &galaxy, const int &starsNumber, const double &area, const double &speedInit, const double &step, bool isBlackHole, const double &blackHoleMass, const double &galaxyThickness)
 {
-    galaxy.push_back(Star(speedInit, area, step, galaxyThickness));
-    galaxy.back().index = galaxy.size() - 1;
-    galaxy.back().mass = random(0.0, 1.) * SOLAR_MASS;
-    galaxy.back().color = Vector(255, 0, 0);
+    for(int i{0}; i < starsNumber; i++) {
+        galaxy.push_back(Star(speedInit, area, step, galaxyThickness));
+        galaxy.back().index = galaxy.size() - 1;
+        galaxy.back().mass = random(0.08, 1.) * SOLAR_MASS;
+        galaxy.back().color = Vector(255, 0, 0);
+    }
 }
 
 Vector forceDensityCalculations(const Block &block, Star &star, const double &precision)
@@ -119,8 +121,6 @@ Vector forceDensityCalculations(const Block &block, Star &star, const double &pr
     double distance = getRadius(star.position, block.massCenter);
 
     if(block.nbStars == 1) {
-        Star::list::iterator itS = std::get<0>(block.contain);
-
         if(distance != 0.) {
              force += (dStarMass * (1. / distance)) * (-(G * block.mass) / (distance * distance));
             star.density += LIGHT_YEAR * block.nbStars / (distance);
@@ -130,6 +130,7 @@ Vector forceDensityCalculations(const Block &block, Star &star, const double &pr
            force += (dStarMass * (1. / distance)) * (-(G * block.mass) / (distance * distance));
            star.density += LIGHT_YEAR * block.nbStars / (distance);
         } else {
+            qDebug() << "COucou\n";
             auto & blocks = std::get<1>(block.contain);
             for(auto i{0}; i < 8; i++)
                 if(blocks[i].nbStars > 0)

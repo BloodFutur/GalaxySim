@@ -27,9 +27,9 @@ public:
 
     void operator=(const Block& block);
 
-    void set_size(const double & size);         // Update block size
-    void divide(Star::range);                   // Divide a block into an octree
-    void updateMass(const Star::range & galaxy); //
+    void set_size(const double & size);             // Update block size
+    void divide(Star::range stars);                       // Divide a block into an octree
+    void updateMass(const Star::range & galaxy);    //
 
     std::variant<Star::list::iterator, std::vector<Block>> contain;
 };

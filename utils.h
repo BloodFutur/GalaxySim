@@ -2,7 +2,7 @@
 #define UTILS_H
 
 #include <random>
-
+#include <QDebug>
 
 // Function loaded while compiling for exponents
 template <typename T>
@@ -31,7 +31,7 @@ double random(const double & min, const double & max);
 // Create a random integer in the interval [min,max]
 int random(const int & min, const int & max);
 
-enum Views { NORMAL = 0, XY, YZ, ZX};
+enum Views { DEFAULT = 0, XY, YZ, ZX};
 // TODO add a function to draw stars
 // This function manage views
 
