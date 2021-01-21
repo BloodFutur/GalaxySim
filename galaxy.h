@@ -2,6 +2,8 @@
 #define GALAXY_H
 
 #include "widget.h"
+#include "block.h"
+#include "utils.h"
 
 #include <QtGui/QGuiApplication>
 #include <QtGui/QMatrix4x4>
@@ -23,12 +25,33 @@ public:
     void render() override;
     void reshape(int w, int h);
 private:
+    void drawStars(Star::range & galaxy, const Vector & centerMass, const double & area, const double & zoom, Views view);
+
     GLuint m_posAttr;
     GLuint m_colAttr;
     GLuint m_matrixUniform;
 
+    // Parameters
+    double area;
+    double galaxyThickness;
+    int nbStars;
+    double speedInit;
+    bool isBlackHole;
+    double blackHoleMass;
+    double step;
+    double precision;
+    bool verletIntegration;
+
+    Views view;
+    double zoom;
+    bool realColors;
+
     QOpenGLShaderProgram *m_program;
     int m_frame;
+
+    Star::list galaxy;
+    Block block;
 };
+
 
 #endif // GALAXY_H
