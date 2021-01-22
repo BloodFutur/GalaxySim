@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 
     Galaxy galaxy;
     galaxy.setFormat(format);
-    galaxy.resize(1080,720);
+    galaxy.resize(1000,1000);
     galaxy.show();
     galaxy.setAnimating(true);
 

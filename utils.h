@@ -2,7 +2,6 @@
 #define UTILS_H
 
 #include <random>
-#include <QDebug>
 
 // Function loaded while compiling for exponents
 template <typename T>

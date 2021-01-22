@@ -10,20 +10,19 @@
 class Block
 {
 public:
-    Block();
-    Block(const Block& block);
+    Block() = default;
 
-    Vector position;        // Position of the block
-    double mass;            // The mass of the block (average of the mass of all stars)
-    Vector massCenter;      // Its mass center is the average of stars mass centers
-    size_t nbStars;         // It is the number of stars in the block
+    Vector position {0,0,0};        // Position of the block
+    double mass {0};            // The mass of the block (average of the mass of all stars)
+    Vector massCenter {0,0,0};      // Its mass center is the average of stars mass centers
+    size_t nbStars{0};         // It is the number of stars in the block
 
-    bool asStars;
-    bool asChildren;
-    bool asParents;
-    int parent;
+    bool asStars{false};
+    bool asChildren{false};
+    bool asParents{false};
+    int parent{false};
 
-    double size;
+    double size{0.};
 
     void operator=(const Block& block);
 

@@ -25,32 +25,34 @@ public:
     void render() override;
     void reshape(int w, int h);
 private:
-    void drawStars(Star::range & galaxy, const Vector & centerMass, const double & area, const double & zoom, Views view);
+    void drawStars(Star::range & galaxy);
 
     GLuint m_posAttr;
     GLuint m_colAttr;
     GLuint m_matrixUniform;
 
     // Parameters
-    double area;
-    double galaxyThickness;
-    int nbStars;
-    double speedInit;
-    bool isBlackHole;
-    double blackHoleMass;
-    double step;
-    double precision;
-    bool verletIntegration;
+    static constexpr double area = 1000. * LIGHT_YEAR;
+    static constexpr double galaxyThickness = 0.05;
+    static constexpr int nbStars = 10000;
+    static constexpr double speedInit = 10000.;
+    static constexpr bool isBlackHole = false;
+    static constexpr double blackHoleMass = 0.;
+    static constexpr double step = 100000. * YEAR;
+    static constexpr double precision = 1.;
+    static constexpr bool verletIntegration = true;
 
-    Views view;
-    double zoom;
-    bool realColors;
+    static constexpr Views view = DEFAULT;
+    static constexpr double zoom = 1.0/(LIGHT_YEAR * 1000);
+    static constexpr bool realColors = false;
 
     QOpenGLShaderProgram *m_program;
     int m_frame;
 
     Star::list galaxy;
     Block block;
+    Star::range aliveGalaxy;
+
 };
 
 

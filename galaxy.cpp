@@ -1,24 +1,11 @@
 #include "galaxy.h"
-#include <QDebug>
 Galaxy::Galaxy()
     : m_program(0)
     , m_frame(0)
 {
-    // Parameters
-    area = 1000.;
-    galaxyThickness = 0.01;
-    nbStars = 100;
-    speedInit = 10000.;
-    isBlackHole = false;
-    blackHoleMass = 0.;
-    step = 10000;
-    precision = 1.;
-    verletIntegration = true;
 
-    view = DEFAULT;
-    zoom = 1.;
-    realColors = true;
 }
+
 
 
 void Galaxy::initialize()
@@ -29,14 +16,13 @@ void Galaxy::initialize()
     glLoadIdentity();
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glViewport(0,0,1920,1080);
+    glViewport(0,0,1000,1000);
 
-    area *= LIGHT_YEAR;
-    step *= YEAR;
+    constexpr size_t nbThreads = 8;
+
 
     initializeGalaxy(galaxy, nbStars, area, speedInit, step, isBlackHole, blackHoleMass, galaxyThickness);
-
-
+    aliveGalaxy = { galaxy.begin(), galaxy.end()};
 
 
 }
@@ -44,28 +30,26 @@ void Galaxy::initialize()
 void Galaxy::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glColor3f(1.0, 1.0, 1.0);
-    glPointSize(5);
+    glPointSize(2);
 
 
-    Star::range aliveGalaxy { galaxy.begin(), galaxy.end()};
-
+    createBlocks(area, block, aliveGalaxy);
     for(auto itStar = aliveGalaxy.begin; itStar != aliveGalaxy.end; itStar++) {
         itStar->updateAccelerationDensity(block, precision);
         if(!verletIntegration)
             itStar->updateSpeed(step, area);
 
-        //itStar->updatePosition(step, verletIntegration); //BUG App crashes there
-        itStar->updatePosition(step, false);
+        itStar->updatePosition(step, verletIntegration);
         if(!isIn(block, *itStar))
             itStar->isAlive = false;
         else if(!realColors)
             itStar->updateColor();
 
     }
+    aliveGalaxy.end = std::partition(aliveGalaxy.begin, aliveGalaxy.end, [](const Star & star) { return star.isAlive;});
 
-    qDebug() << "Wsh";
-    createBlocks(area, block, aliveGalaxy);
-    drawStars(aliveGalaxy, block.massCenter, area, zoom, view);
+
+    drawStars(aliveGalaxy);
 
 
     //m_program->release();
@@ -75,30 +59,24 @@ void Galaxy::render() {
 
 
 
-void Galaxy::drawStars(Star::range &galaxy, const Vector &centerMass, const double &area, const double &zoom, Views view)
+void Galaxy::drawStars(Star::range &galaxy)
 {
-    double x,y,z,
-            xP,yP,zP;
-    double zo = 1.0/(LIGHT_YEAR * 1000);
-    int t = 0;
-    for(auto itStar = galaxy.begin; itStar != galaxy.end; itStar++, t++) {
-        x = (itStar->position).x();
-        y = itStar->position.y();
-        z = itStar->position.z();
+    double x,y;
+    for(auto itStar = galaxy.begin; itStar != galaxy.end; itStar++) {
+        x = (itStar->position).x() * zoom;
+        y = itStar->position.y() * zoom;
+        //z = itStar->position.z() * zo;
 
-        xP = x * zo;
-        yP = y * zo;
-        zP = z * zo;
-        qDebug() << xP << " " << yP << ' ' << zP << '\n';
 
-        glColor4d(itStar->color.x(), itStar->color.y(), itStar->color.z(), 255);
-        glPointSize(5);
+        double R,G,B;
+        R = itStar->color.x();
+        G = itStar->color.y();
+        B = itStar->color.z();
         glBegin(GL_POINTS);
-
-
-            glColor4d(255, itStar->color.y() * zo, itStar->color.z() * zo, 255 * 0.5);
-            glVertex3d(xP,yP,zP);
-
+            glColor4d(R, G, B, 255);
+            glVertex2d(x,y);
+            //glColor4d(R,G,B,255*05.);
         glEnd();
+
     }
 }

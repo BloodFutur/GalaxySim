@@ -13,29 +13,31 @@ class Block;
 class Star
 {
 public:
-    using list = std::list<Star>;
+    using list = std::vector<Star>;
 
     struct range {
         list::iterator begin;
         list::iterator end;
     };
 
-    Star();
+    Star() = default;
+    virtual ~Star() = default;
+
     Star(const double & speedInit, const double & area, const double & step, const double & galaxy_thickness);
-    Star(const Star & star);
+    Star(const Star & star) = default;
 
-    int index;
-    int blockIndex;
+    int index {0};
+    int blockIndex {0};
 
-    bool isAlive;
-    Vector previousPosition;
-    Vector position;
-    Vector speed;
-    Vector acceleration;
+    bool isAlive{false};
+    Vector previousPosition{0,0,0};
+    Vector position{ 0, 0, 0};
+    Vector speed{ 0, 0, 0};
+    Vector acceleration{ 0, 0, 0};
 
     Vector color = { 0.0, 0.0, 0.0};
-    double mass;
-    double density;
+    double mass {0};
+    double density {0};
 
     void updatePosition(const double & step, bool verletIntegration);
     void updateSpeed(const double & step, const double & area);

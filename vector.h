@@ -30,9 +30,9 @@ public:
     void z(const double &val) noexcept;
 
     // Get the coordinates of the vector using spherical system
-    double getRadius() const noexcept;  // in meters
-    double getPhi() const noexcept;     // in radians
-    double getTheta() const noexcept;   // in radians
+    [[nodiscard]] double getRadius() const noexcept;  // in meters
+    [[nodiscard]] double getPhi() const noexcept;     // in radians
+    [[nodiscard]] double getTheta() const noexcept;   // in radians
 
     void operator=(const Vector& vector) noexcept;
     Vector& operator+=(const Vector& vector) noexcept;

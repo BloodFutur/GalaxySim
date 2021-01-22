@@ -1,5 +1,4 @@
 #include "block.h"
-#include <QDebug>
 /*
 std::array<Star::range, 8> setOctree(Star::range stars, Vector center) {
     // for each axis check if position of the star < center pos
@@ -39,26 +38,26 @@ std::array<Star::range, 8> setOctree(Star::range stars, Vector center) {
 */
 std::array<Star::range, 8> setOctree(Star::range stars, Vector pivot)
 {
-    std::array<std::function<bool(const Star & star)>, 3> testStarAxis =
+    const std::array<std::function<bool(const Star & star)>, 3> testStarAxis =
     {
-        [pivot](const Star& star) {return star.position.x() < pivot.x(); },
-        [pivot](const Star& star) {return star.position.y() < pivot.y(); },
-        [pivot](const Star& star) {return star.position.z() < pivot.z(); }
+        [&pivot](const Star& star) {return star.position.x() < pivot.x(); },
+        [&pivot](const Star& star) {return star.position.y() < pivot.y(); },
+        [&pivot](const Star& star) {return star.position.z() < pivot.z(); }
     };
 
     std::array<Star::range, 8> result;
-    int iPart = 0;
-    Star::list::iterator itX = std::partition(stars.begin, stars.end, testStarAxis[0]);
+    std::size_t iPart {0};
+    auto itX = std::partition(stars.begin, stars.end, testStarAxis[0]);
     auto xParts = std::array{ Star::range{stars.begin, itX}, Star::range{itX, stars.end} };
 
-    for (auto& part : xParts)
+    for (auto & part : xParts)
     {
-        Star::list::iterator itY = std::partition(part.begin, part.end, testStarAxis[1]);
+        auto itY = std::partition(part.begin, part.end, testStarAxis[1]);
         auto yParts = std::array{ Star::range{part.begin, itY}, Star::range{itY, part.end} };
 
-        for (auto& part : yParts)
+        for (auto & part : yParts)
         {
-            Star::list::iterator itZ = std::partition(part.begin, part.end, testStarAxis[2]);
+            auto itZ = std::partition(part.begin, part.end, testStarAxis[2]);
             result[iPart++] = Star::range{ part.begin, itZ };
             result[iPart++] = Star::range{ itZ, part.end };
         }
@@ -67,6 +66,7 @@ std::array<Star::range, 8> setOctree(Star::range stars, Vector pivot)
     return result;
 }
 
+/*
 Block::Block()
 {
     position = Vector(0. ,0. ,0.);
@@ -78,19 +78,7 @@ Block::Block()
     asParents = false;
     size = 0.;
 }
-
-Block::Block(const Block &block)
-{
-    position = Vector(0. ,0. ,0.);
-    mass = 0.;
-    massCenter = Vector(0., 0., 0.);
-    nbStars = 0;
-    asStars = false;
-    asChildren = false;
-    asParents = false;
-    size = 0.;
-}
-
+*/
 void Block::operator=(const Block &block)
 {
     position = block.position;
@@ -107,11 +95,10 @@ void Block::set_size(const double &size)
 {
     this->size = size;
 }
-
+/*
 void Block::divide(Star::range stars)
 {
 
-    qDebug() << "divide\n";
     // TODO Fill this function
     // No stars case
     // If only one star its trivial
@@ -137,7 +124,6 @@ void Block::divide(Star::range stars)
             contain = std::vector<Block>(8);
 
         nbStars = std::distance(stars.begin, stars.end);
-        qDebug() << nbStars;
         asChildren = true;
 
         Block block;
@@ -166,7 +152,7 @@ void Block::divide(Star::range stars)
         for(auto iBlock{0}; iBlock < 8; iBlock++) {
             blocks[iBlock] = block;
             blocks[iBlock].position = pos[iBlock];
-            blocks[iBlock].divide(octree[iBlock]);
+            //blocks[iBlock].divide(octree[iBlock]);
 
             if(blocks[iBlock].nbStars > 0) {
                 newMass += blocks[iBlock].mass;
@@ -175,7 +161,78 @@ void Block::divide(Star::range stars)
         }
 
         mass = newMass;
-        massCenter = newMassCenter;
+        massCenter = newMassCenter / newMass;
+    }
+}
+
+*/
+void Block::divide(Star::range stars)
+{
+    if (stars.begin == stars.end) // pas d'etoile
+    {
+        contain = stars.begin; // pas très utile, permet de clear la memoire de array<Block, 8> si c'était sa valeur précédente
+        nbStars = 0;
+        mass = 0.;
+        massCenter = Vector(0., 0., 0.);
+        asChildren = false;
+    }
+
+    else if (std::next(stars.begin) == stars.end) // une étoile
+    {
+        contain = stars.begin;
+        nbStars = 1;
+        mass = stars.begin->mass;
+        massCenter = stars.begin->position;
+        asChildren = false;
+    }
+
+    else
+    {
+        if (contain.index() != 1)
+            contain = std::vector<Block>(8);
+
+        nbStars = std::distance(stars.begin, stars.end);
+        asChildren = true;
+
+        Block block;
+
+        block.asParents = true;
+        block.set_size(size / 2.);
+
+        Vector posis[] =
+        {
+            {position.x() - size / 4., position.y() - size / 4., position.z() - size / 4.},
+            {position.x() - size / 4., position.y() - size / 4., position.z() + size / 4.},
+            {position.x() - size / 4., position.y() + size / 4., position.z() - size / 4.},
+            {position.x() - size / 4., position.y() + size / 4., position.z() + size / 4.},
+            {position.x() + size / 4., position.y() - size / 4., position.z() - size / 4.},
+            {position.x() + size / 4., position.y() - size / 4., position.z() + size / 4.},
+            {position.x() + size / 4., position.y() + size / 4., position.z() - size / 4.},
+            {position.x() + size / 4., position.y() + size / 4., position.z() + size / 4.}
+        };
+
+        auto& myblocks = std::get<1>(contain);
+        auto partitions_stars = setOctree(stars, position);
+        double new_mass = 0.;
+        Vector new_mass_center = Vector(0., 0., 0.);
+        int i_add = 0;
+
+        for (int ibloc = 0; ibloc < 8; ibloc++)
+        {
+            myblocks[ibloc] = block;
+            myblocks[ibloc].position = posis[ibloc];
+            myblocks[ibloc].divide(partitions_stars[ibloc]);
+
+            if (myblocks[ibloc].nbStars > 0)
+            {
+                new_mass += myblocks[ibloc].mass;
+                new_mass_center += myblocks[ibloc].massCenter * myblocks[ibloc].mass;
+                i_add++;
+            }
+        }
+
+        mass = new_mass;
+        massCenter = new_mass_center / new_mass;
     }
 }
 
@@ -202,8 +259,8 @@ void createBlocks(const double &area, Block &block, Star::range &galaxy)
 bool isIn(const Block &block, const Star &star)
 {
     Vector p = block.position;
-    double hsblock = block.size / 2;
-    return (p.x() + hsblock > p.x() && p.x() - hsblock < p.x() &&
-            p.y() + hsblock > p.y() && p.y() - hsblock < p.y() &&
-            p.z() + hsblock > p.z() && p.z() - hsblock < p.z());
+    double hsblock = block.size * 0.5;
+    return (p.x() + hsblock > star.position.x() && p.x() - hsblock < star.position.x() &&
+            p.y() + hsblock > star.position.y() && p.y() - hsblock < star.position.y() &&
+            p.z() + hsblock > star.position.z() && p.z() - hsblock < star.position.z());
 }

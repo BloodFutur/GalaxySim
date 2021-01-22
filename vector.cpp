@@ -114,7 +114,7 @@ Vector &Vector::operator*=(const double &number) noexcept
 
 Vector &Vector::operator/=(const double &number)
 {
-    assert(number == 0 && "You thought you can divide by 0?");
+    assert(number != 0 && "You thought you can divide by 0?");
     _x /= number;
     _y /= number;
     _z /= number;
