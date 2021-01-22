@@ -20,8 +20,6 @@ int main(int argc, char *argv[])
     Widget w;
     w.show();
 
-
-
     TriangleTest window;
     window.setFormat(format);
     window.resize(640, 480);

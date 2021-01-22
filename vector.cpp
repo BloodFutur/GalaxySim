@@ -64,6 +64,9 @@ void Vector::z(const double &val) noexcept
     _z = val;
 }
 
+//
+// Check spherical coordinate system
+//
 double Vector::getRadius() const noexcept
 {
     return sqrt(_x*_x+_y*_y+_z*_z);
@@ -81,6 +84,7 @@ double Vector::getTheta() const noexcept
 {
     return acos(_z / getRadius());
 }
+
 
 void Vector::operator=(const Vector &vector) noexcept
 {
@@ -135,11 +139,13 @@ Vector operator-(Vector lhs, Vector const & rhs) noexcept
 
 double operator*(Vector &lhs, const Vector &rhs) noexcept
 {
+    // The coordinate system is orthonormal
     return lhs.x() * rhs.x() + lhs.y() * rhs.y() + lhs.z() * rhs.z();
 }
 
 Vector operator^(Vector lhs, const Vector &rhs) noexcept
 {
+    // The coordinate system is orthonormal
     return Vector(lhs.y() * rhs.z() - lhs.z() * rhs.y(),
                   lhs.z() * rhs.x() - lhs.x() * rhs.z(),
                   lhs.x() * rhs.y() - lhs.y() * rhs.x());
@@ -163,6 +169,9 @@ bool operator!=(Vector &lhs, const Vector &rhs) noexcept
     return !(lhs == rhs);
 }
 
+//
+// Check spherical coordinate system
+//
 double projOnX(const double &radius, const double &phi, const double &theta)
 {
     return radius * cos(phi) * sin(theta);

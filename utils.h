@@ -3,7 +3,12 @@
 
 #include <random>
 
-// Function loaded while compiling for exponents
+/**
+ * @brief Calculate exponents
+ * @tparam the base of the exponent
+ * @param the exponent number
+ * @return return the value of the exponent
+ */
 template <typename T>
 constexpr T E(T x, int y) {
     return[&]() {
@@ -24,14 +29,28 @@ constexpr double LIGHT_YEAR = (9.461 * E<double>(10,15));   // A light year in m
 constexpr double SOLAR_MASS = (1.989 * E<double>(10,30));   // The solar mass in kilograms
 constexpr double YEAR       = 31536000.;                    // Year in seconds
 
-// Create a random double in the interval [min,max]
+/**
+ * @brief Return a random double in the interval
+ * @param[in] min The lower bound of the interval
+ * @param[in] max The upper bound of the interval
+ * @returns the random number
+ */
 double random(const double & min, const double & max);
 
-// Create a random integer in the interval [min,max]
+/**
+ * @brief Return a random integer in the interval
+ * @param[in] min The lower bound of the interval
+ * @param[in] max The upper bound of the interval
+ * @returns the random number
+ */
 int random(const int & min, const int & max);
 
+/**
+ * @enum Views
+ * @brief The Views enum
+ * @details All available views that can be used in the viewport
+ */
 enum Views { DEFAULT = 0, XY, YZ, ZX};
-// TODO add a function to draw stars
-// This function manage views
+
 
 #endif // UTILS_H

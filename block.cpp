@@ -36,8 +36,16 @@ std::array<Star::range, 8> setOctree(Star::range stars, Vector center) {
     return octree;
 }
 */
+
+/**
+ * @brief Create an octree with a list of stars
+ * @param stars All stars that will be separed in trees
+ * @param pivot The point which is teh center of the octree
+ * @return
+ */
 std::array<Star::range, 8> setOctree(Star::range stars, Vector pivot)
 {
+    // Check star's next block
     const std::array<std::function<bool(const Star & star)>, 3> testStarAxis =
     {
         [&pivot](const Star& star) {return star.position.x() < pivot.x(); },
@@ -168,16 +176,16 @@ void Block::divide(Star::range stars)
 */
 void Block::divide(Star::range stars)
 {
-    if (stars.begin == stars.end) // pas d'etoile
+    if (stars.begin == stars.end) // No stars
     {
-        contain = stars.begin; // pas très utile, permet de clear la memoire de array<Block, 8> si c'était sa valeur précédente
+        contain = stars.begin; // Clear the memory of the std::vector<Block>(8)
         nbStars = 0;
         mass = 0.;
         massCenter = Vector(0., 0., 0.);
         asChildren = false;
     }
 
-    else if (std::next(stars.begin) == stars.end) // une étoile
+    else if (std::next(stars.begin) == stars.end) // Only one star
     {
         contain = stars.begin;
         nbStars = 1;
@@ -212,27 +220,27 @@ void Block::divide(Star::range stars)
         };
 
         auto& myblocks = std::get<1>(contain);
-        auto partitions_stars = setOctree(stars, position);
-        double new_mass = 0.;
-        Vector new_mass_center = Vector(0., 0., 0.);
-        int i_add = 0;
+        auto partitionsStars = setOctree(stars, position);
 
+        double newMass = 0.;
+        Vector newMassCenter = Vector(0., 0., 0.);
+
+        // Update parameters of blocks in the octree
         for (int ibloc = 0; ibloc < 8; ibloc++)
         {
             myblocks[ibloc] = block;
             myblocks[ibloc].position = posis[ibloc];
-            myblocks[ibloc].divide(partitions_stars[ibloc]);
+            myblocks[ibloc].divide(partitionsStars[ibloc]);
 
             if (myblocks[ibloc].nbStars > 0)
             {
-                new_mass += myblocks[ibloc].mass;
-                new_mass_center += myblocks[ibloc].massCenter * myblocks[ibloc].mass;
-                i_add++;
+                newMass += myblocks[ibloc].mass;
+                newMassCenter += myblocks[ibloc].massCenter * myblocks[ibloc].mass;
             }
         }
 
-        mass = new_mass;
-        massCenter = new_mass_center / new_mass;
+        mass = newMass;
+        massCenter = newMassCenter / newMass; // Divide by mass to reduce computations
     }
 }
 
@@ -245,8 +253,7 @@ void Block::updateMass(const Star::range &galaxy)
         mass += it->mass;
     }
 
-    massCenter = massCenter / mass;
-
+    massCenter = massCenter / mass; // Divide by the mass to do less computations later
 }
 
 

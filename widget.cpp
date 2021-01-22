@@ -13,9 +13,7 @@ Widget::Widget(QWindow *parent)
     , m_context(0)
     , m_device(0)
 {
-    //ui->setupUi(this);
     setSurfaceType(QWindow::OpenGLSurface);
-
 }
 
 Widget::~Widget()

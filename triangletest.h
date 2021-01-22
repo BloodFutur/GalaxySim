@@ -10,7 +10,10 @@
 
 #include <QtCore/qmath.h>
 
-//! [1]
+/** @class TriangleTest
+ * @brief The TriangleTest class is a test to check OpenGL functions
+ * @details It is in Qt examples
+ */
 class TriangleTest: public Widget
 {
 public:

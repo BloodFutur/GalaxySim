@@ -4,13 +4,14 @@
 #include "block.h"
 
 
-Star::Star(const double &speedInit, const double &area, const double &step, const double &galaxy_thickness)
+Star::Star(const double &speedInit, const double &area, const double &step, const double &galaxyThickness)
 {
     index = 0;
     blockIndex = 0;
     isAlive = true;
+    // Create random position in a sphere
     position = Vector::createSpherical((sqrt(random(0.,1.)) - 0.5) * area, random(0., 2. * PI), PI * .5);
-    position.z(((random(0.,1.) - 0.5) * (area * galaxy_thickness)));
+    position.z(((random(0.,1.) - 0.5) * (area * galaxyThickness)));
     speed = Vector::createSpherical(speedInit, position.getPhi() + PI * 0.5, PI * 0.5);
     previousPosition = position - (speed * step);
     acceleration = Vector(0., 0., 0.);
@@ -18,20 +19,6 @@ Star::Star(const double &speedInit, const double &area, const double &step, cons
     density = 0.;
 }
 
-/*
-Star::Star(const Star &star)
-{
-    index = star.index;
-    blockIndex = star.blockIndex;
-    isAlive = star.isAlive;
-    position = star.position;
-    speed = star.speed;
-    previousPosition = star.previousPosition;
-    acceleration = star.acceleration;
-    mass = star.mass;
-    density = star.density;
-}
-*/
 
 void Star::updatePosition(const double &step, bool verletIntegration)
 {
@@ -61,6 +48,7 @@ void Star::updateAccelerationDensity(const Block &block, const double &precision
 
 void Star::updateColor()
 {
+    // Star with blue and goes white with higher density
     int icolor = density * 5.;
     int R, G, B;
     if(icolor > 3 * 255) icolor = 3*255;
@@ -143,6 +131,7 @@ Vector forceDensityCalculations(const Block &block, Star &star, const double &pr
 
     if(block.nbStars == 1) {
         if(distance != 0.) {
+            // Gravity force F=-Gmm/d^2
             force += (dStarMass * (1. / distance)) * (-(G * block.mass) / (distance * distance));
             star.density += (1. / distance)  / (LIGHT_YEAR);
         }
@@ -151,6 +140,8 @@ Vector forceDensityCalculations(const Block &block, Star &star, const double &pr
            force += (dStarMass * (1. / distance)) * (-(G * block.mass) / (distance * distance));
            star.density += block.nbStars / (distance / LIGHT_YEAR);
         } else {
+            // If the star is too far to have a good precision
+            // Then we create new blocks
             auto & blocks = std::get<1>(block.contain);
             for(auto i{0}; i < 8; i++)
                 if(blocks[i].nbStars > 0)

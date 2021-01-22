@@ -4,9 +4,13 @@
 #include "star.h"
 #include "vector.h"
 
-//TODO Comment this class
 
-// Area (block) of Barnes-Hut algorithm
+/** @class Block
+ * @brief A block of Barnes-Hut algorithm
+ * @note There are many stars, it is impossible to compute all the calculations
+ * We compute forces, speed and other properties on average on a block
+ * It divides the numbers of computations
+ */
 class Block
 {
 public:
@@ -26,14 +30,43 @@ public:
 
     void operator=(const Block& block);
 
-    void set_size(const double & size);             // Update block size
-    void divide(Star::range stars);                       // Divide a block into an octree
-    void updateMass(const Star::range & galaxy);    //
+    /**
+     * @brief Update block size
+     * @param size
+     */
+    void set_size(const double & size);
 
+    /**
+     * @brief Divide a block into octrees
+     * @param stars All stars in a block
+     */
+    void divide(Star::range stars);
+
+    /**
+     * @brief Update the mass of a block
+     * @param galaxy
+     */
+    void updateMass(const Star::range & galaxy);
+
+    // Container defined by the union of an iterator and an octree
+    // It is to use less memory when manipulating stars
     std::variant<Star::list::iterator, std::vector<Block>> contain;
 };
 
-void createBlocks(const double & area, Block & block, Star::range & galaxy); // Create blocks
-bool isIn(const Block & block, const Star & star);                           // Check if the star is in the block
+/**
+ * @brief Create blocks
+ * @param area area of a block
+ * @param block The block that will be divided
+ * @param galaxy All stars in the galaxy
+ */
+void createBlocks(const double & area, Block & block, Star::range & galaxy);
+
+/**
+ * @brief Check if a Star is in a Block
+ * @param block The block where the star can be
+ * @param star The star which we will check if it is in the block
+ * @return 'true' if the star is in the block, else returns 'false'
+ */
+bool isIn(const Block & block, const Star & star);
 
 #endif // BLOCK_H
