@@ -1,6 +1,4 @@
-Create block class :
-    it is defined as an area of Barnes-Hut algorithm
-
-Fix Star class
-
-Create Barnes-Hut algorithm
+Multithread the window
+Let the possibility to change views
+Add few buttons and so on on a window
+Use CMake

@@ -16,16 +16,16 @@ int main(int argc, char *argv[])
     galaxy.show();
     galaxy.setAnimating(true);
 
-    /*
-    Widget w;
-    w.show();
 
-    TriangleTest window;
-    window.setFormat(format);
-    window.resize(640, 480);
-    window.show();
-    window.setAnimating(true);
-    */
+//    Widget w;
+//    w.show();
+
+//    TriangleTest window;
+//    window.setFormat(format);
+//    window.resize(640, 480);
+//    window.show();
+//    window.setAnimating(true);
+
 
 
     return a.exec();

@@ -23,6 +23,7 @@ constexpr T E(T x, int y) {
 
 }
 
+
 constexpr double PI         = 3.14159265;
 constexpr double G          = (6.674 * E<double>(10,-11));  // Gravitational Constant in ISU
 constexpr double LIGHT_YEAR = (9.461 * E<double>(10,15));   // A light year in meters

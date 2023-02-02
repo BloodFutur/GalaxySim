@@ -70,11 +70,11 @@ private:
     static constexpr bool isBlackHole = false;
     static constexpr double blackHoleMass = 0.;
     static constexpr double step = 100000. * YEAR;
-    static constexpr double precision = 1.;
+    static constexpr double precision = 2.;
     static constexpr bool verletIntegration = true;
 
     static constexpr Views view = DEFAULT;
-    static constexpr double zoom = 1.0/(LIGHT_YEAR * 1000);
+    static constexpr double zoom = 2.0/(LIGHT_YEAR * 1000);
     static constexpr bool realColors = false;
 
 
